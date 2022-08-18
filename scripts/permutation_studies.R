@@ -6,7 +6,7 @@ library("tidyr")
 library("dplyr")
 library("ggplot2")
 
-source("numerical-experiments/00_utils.R")
+source("00_utils.R")
 
 alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
 Bs <- c(100, 200, 500, 1000, 2000, 5000)          # number of permutations for adaptive methods
