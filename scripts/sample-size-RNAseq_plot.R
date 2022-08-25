@@ -68,7 +68,7 @@ level$method[level$method == "Simes + step-down calibration"] <- "Adaptive Simes
 level$method[level$method == "Simes + single-step calibration"] <- "Adaptive Simes (single step)"
 
 lev <- filter(level, pi0 == 0.8, 
-              alpha <=0.75, N %in% c(5, 20, 50, 90), 
+              alpha <=0.75, N %in% c(10, 50, 90), 
               SNR %in% c(1, 2))
 nb_exp_ <- unique(lev[["nb_exp"]])
 
@@ -92,6 +92,7 @@ p + geom_ribbon(alpha = 0.3, linetype = 1)
 
 plotname <- sprintf("fig-S6_JER-control_%s_%s_sample-size.pdf", 
                     technology, data_set)
+print(plotname)
 pathname <- file.path(fig_path, plotname)
 ggsave(p + geom_ribbon(alpha = 0.3, linetype = 1), 
        file = pathname, scale = 1, width = 16, height = 8)
@@ -113,7 +114,7 @@ pow <- filter(power,
               SNR ==2,
               selection %in% c("first_1000", "BH_05", "H"),
               alpha <= 0.9,
-              N %in% c(5,20,50,90),
+              N %in% c(10, 50, 90),
               pi0 == 0.8)
 nb_exp_ <- unique(pow[["nb_exp"]])
 pow
@@ -133,7 +134,8 @@ p <- ggplot(pow, aes(x = alpha, y = estimate,
   theme(legend.position="bottom")
 p
 
-plotname <- sprintf("fig-S5_power_%s_%s_sample-size.pdf", 
+plotname <- sprintf("fig-S7_power_%s_%s_sample-size.pdf", 
                     technology, data_set)
+print(plotname)
 pathname <- file.path(fig_path, plotname)
 ggsave(p, file = pathname, scale = 1, width = 8, height = 6)
