@@ -20,8 +20,7 @@ n <- 60
 # K <- 99
 m <- 1000
 K <- 50
-rho <- c(0, 0.1, 0.4, 0.6, 0.8, 1)
-
+rho <- c(0.2, 0.4, 0.6)
 ds_name <- "block-cov"
 
 mu <- rep(0, m)
@@ -40,12 +39,12 @@ rowTestFUN <- sanssouci::rowPearsonCorrelationTests
 # parameters
 # - - - - - - - - - - - - -
 alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
-B <- 10          # number of permutations for adaptive methods
-nb_exp <- 10     # number of experiments
+B <- 1000          # number of permutations for adaptive methods
+nb_exp <- 1000     # number of experiments
 
 snr <- 2
 effect <- 1
-nb_correlation = c(1, 2, 5, 10, 20, 50)
+nb_correlation = c(1, 2, 5, 10, 20, 50)  ## determines pi0
 
 configs <- expand.grid(nb_correlation = nb_correlation)
 seq_configs <- 1:nrow(configs)
