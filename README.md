@@ -13,6 +13,15 @@ library(future)
 plan(multisession, workers = 2) # parallelize on 2 nodes
 ```
 
+### RNAseq data analysis
+
+Use `source("scripts/perf_RNAseq_run.R")` to produce the following figures:
+
+- Figure 2 (confidence curves)
+- Figure 3 (volcano plot)
+- Figure S-2 (confidence curves, all methods)
+- Figure S-2 (limma vs Wilcoxon p-values)
+
 ## JER control and power
 
 ### Fig 4 and S-5 (RNAseq data)
@@ -49,10 +58,6 @@ plan(multisession, workers = 2) # parallelize on 2 nodes
 | Figures  | Scripts         | Topic |
 | :--------------- |:---------------| :-----|
 | Figure 01   |   ce texte  | calibration algorithm           |
-| Figure 02  | figure-02.R  |        |
-| Figure 03  | figure-03_S-01.R          |    |
-| Figure S-01  | figure-03_S-01.R |    Aligné à droite |
-| Figure S-02  | comparison_tests.R |      |
 | Figure S-03  | permutation_studies.R          |    technology = "RNAseq" |
 | Figure S-04  | permutation_studies.R          |    technology = "RNAseq" |
 
