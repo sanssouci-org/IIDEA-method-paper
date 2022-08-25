@@ -5,9 +5,9 @@ library("sanssouci")
 library("future.apply")
 library("matrixStats")
 library("cherry")
-library("tibble")
+library("dplyr")
 
-source("scripts/utils/test_JER_control.R")
+source("scripts/utils/test_JER_control_cont-cov.R")
 source("scripts/utils/add_signal.R")
 source("scripts/utils/format_power.R")
 
@@ -16,8 +16,10 @@ source("scripts/utils/format_power.R")
 # - - - - - - - - - - - - -
 technology <- "simulation"
 n <- 60
-m <- 10000
-K <- 99 
+# m <- 10000
+# K <- 99
+m <- 1000
+K <- 50
 rho <- c(0, 0.1, 0.4, 0.6, 0.8, 1)
 
 ds_name <- "block-cov"
@@ -38,8 +40,8 @@ rowTestFUN <- sanssouci::rowPearsonCorrelationTests
 # parameters
 # - - - - - - - - - - - - -
 alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
-B <- 1e3          # number of permutations for adaptive methods
-nb_exp <- 1e3
+B <- 10          # number of permutations for adaptive methods
+nb_exp <- 10     # number of experiments
 
 snr <- 2
 effect <- 1
@@ -51,15 +53,18 @@ seq_configs <- 1:nrow(configs)
 path <- sprintf("results/diff-expr_%s_correlation", technology)
 dir.create(path, showWarnings = FALSE, recursive = TRUE)
 
+Sigma <- matrix(0, nrow = m, ncol = m)
+ind_list <- NULL
+for (i in unique(truthF)){
+  ind_list[[i]] <- which(truthF == i)
+}
+
 for (r in rho){
-  Sigma <- matrix(0, nrow = m, ncol = m)
-  for (i in unique(truthF)){
-    # indS <- which(truthS == i)
-    indF <- which(truthF == i)
-    Sigma[indF, indF] <- Sigma[indF, indF] + r
+  for (ind in ind_list) {
+    Sigma[ind, ind] <- r
   }
   diag(Sigma) <- 1
-  # image(Sigma)
+  # image(Sigma[1:100, 1:100])
   X <- MASS::mvrnorm(n = n, mu = mu, Sigma = Sigma)
   X <- t(X)
   
@@ -77,13 +82,14 @@ for (r in rho){
     # res <- lapply(1:nb_exp, FUN = function(i) {
     res <- future.apply::future_lapply(1:nb_exp, future.seed = TRUE, FUN = function(i) {
       select <- sample(unique(truthF), nb_cor)
-      non_zero = which(truthF %in% select)
-      truth = rep(0, m)
+      non_zero <- which(truthF %in% select)
+      truth <- rep(0, m)
       truth[non_zero] = effect
-      eps = rnorm(n = n)
-      prod_temp = truth %*% X
+      eps <- rnorm(n = n)
+      prod_temp <- truth %*% X
       noise_mag <- sqrt((prod_temp) %*% t(prod_temp)) / (snr * sqrt(eps%*% eps))
-      Y = prod_temp + noise_mag[[1]] * eps
+      Y <- prod_temp + noise_mag[[1]] * eps
+      dim(Y) <- NULL
       
       tests <- rowTestFUN(X, Y)
       p_values <- tests$p.value
@@ -104,11 +110,14 @@ for (r in rho){
         H = 1:m)
 
       ## check JER control and estimate power
-      res_i <- test_JER_control_cont_cov(
-        Y = X, groups = Y, truth = truth, 
-        rowTestFUN = rowTestFUN, B = B, 
-        alpha = alphas, selections = selections,
-        verbose = TRUE)
+      res_i <- test_JER_control_cont_cov(Y = X, 
+                                         groups = Y, 
+                                         truth = truth, 
+                                         rowTestFUN = rowTestFUN, 
+                                         B = B, 
+                                         alpha = alphas, 
+                                         selections = selections,
+                                         verbose = TRUE)
       len <- sapply(selections, FUN = length) %>% 
         data.frame() %>% 
         tibble::rownames_to_column("selection") %>% 
