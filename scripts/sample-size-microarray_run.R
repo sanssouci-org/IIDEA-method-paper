@@ -37,8 +37,8 @@ dir.create(path, showWarnings = FALSE, recursive = TRUE)
 # parameters
 # - - - - - - - - - - - - -
 alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
-B <- 100          # number of permutations for adaptive methods
-nb_exp <- 100     # number of experiments
+B <- 1000          # number of permutations for adaptive methods
+nb_exp <- 1000     # number of experiments
 
 # Ns <- c(10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100)
 Ns <- c(10, 30, 50)

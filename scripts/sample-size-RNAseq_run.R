@@ -7,6 +7,7 @@ library("matrixStats")
 library("cherry")
 library("tibble")
 
+
 source("scripts/utils/test_JER_control.R")
 source("scripts/utils/add_signal.R")
 source("scripts/utils/format_power.R")
@@ -65,7 +66,8 @@ for (cc in seq_configs) {
     
     t0 <- Sys.time()
     res <- future.apply::future_lapply(1:nb_exp, future.seed = TRUE, FUN = function(i) {
-        X0_resize <- X0[, sample(1:n0, N)]
+        spl <- sample(n0, N)
+        X0_resize <- X0[, spl]
         null_counts <- which(rowSums(X0_resize) == 0)
         if (length(null_counts)>0){
             ## caution: here we change the #genes in each experiment

@@ -3,7 +3,7 @@ library("dplyr")
 library("ggplot2")
 
 technology <- "microarray"
-data_set <- "GSE19188_m=21401"
+data_set <- "GSE19188_m=21407"
 path <- sprintf("results/diff-expr_%s_sample-size", technology)
 fig_path <- "figures"
 
@@ -69,7 +69,7 @@ level$method[level$method == "Simes + single-step calibration"] <- "Adaptive Sim
 lev <- filter(level, 
               alpha <= 0.7, 
               pi0 %in% c(0.8), 
-              N %in% c(10, 50, 90))
+              N %in% c(10, 30, 50))
 nb_exp_ <- unique(lev[["nb_exp"]])
 
 p <- ggplot(lev, aes(x = alpha, y = estimate, 
@@ -98,7 +98,7 @@ ggsave(p + geom_ribbon(alpha = 0.3, linetype = 1),
 
 
 # - - - - - - - - - - - - - - - 
-# Figure S10: power
+# Power (not kept int he paper)
 # - - - - - - - - - - - - - - - 
 power <- Reduce(rbind, powList) 
 dim(power)
@@ -109,7 +109,7 @@ power$method[power$method == "Simes + step-down calibration"] <- "Adaptive Simes
 power$method[power$method == "Simes + single-step calibration"] <- "Adaptive Simes (single step)"
 
 pow <- filter(power, 
-              estimate <= 1.0000001,
+              # estimate <= 1.0000001,
               # prob == 0.5,
               # SNR %in% c("*2"),
               # selection %in% c("first_100", "BH_05", "p_05", "H"), 
@@ -135,7 +135,7 @@ p <- ggplot(pow, aes(x = alpha, y = estimate,
   theme(legend.position="bottom")
 p
 
-plotname <- sprintf("fig-S9_power_%s_%s_sample-size.pdf", 
-                    technology, data_set)
-pathname <- file.path(fig_path, plotname)
-ggsave(p, file = pathname, scale = 1, width = 8, height = 6)
+# plotname <- sprintf("fig-S9_power_%s_%s_sample-size.pdf", 
+#                     technology, data_set)
+# pathname <- file.path(fig_path, plotname)
+# ggsave(p, file = pathname, scale = 1, width = 8, height = 6)
