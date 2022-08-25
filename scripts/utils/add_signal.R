@@ -5,6 +5,10 @@ add_signal <- function(
     
     # groups of observations
     groups <- rbinom(n_obs, 1, prob)
+    while (sum(groups) <= 1 || sum(groups) >= n_obs-1) {
+        print(groups)
+        groups <- rbinom(n_obs, 1, prob)
+    }    
     
     # differentially expressed genes
     n_DE <- round(n_genes*(1 - pi0))

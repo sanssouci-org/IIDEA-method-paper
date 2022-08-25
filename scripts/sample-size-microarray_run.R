@@ -5,9 +5,9 @@ library("cherry")
 library("tibble")
 library("GSEABenchmarkeR")
 
-plan(multisession)
+# plan(multisession)
 # future::availableCores() to know available 'workers'
-# plan(multisession, workers = 40)
+plan(multisession, workers = 80)
 
 source("scripts/utils/test_JER_control.R")
 source("scripts/utils/add_signal.R")
@@ -28,11 +28,11 @@ path <- sprintf("results/diff-expr_%s_sample-size", technology)
 dir.create(path, showWarnings = FALSE, recursive = TRUE)
 
 alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
-B <- 10          # number of permutations for adaptive methods
-nb_exp <- 10     # number of experiments
+B <- 100          # number of permutations for adaptive methods
+nb_exp <- 100     # number of experiments
 
 # Ns <- c(10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100)
-Ns <- c(10, 30, 60, 90)
+Ns <- c(10, 30, 50)
 pi0 <- c(0.8)
 SNR = c(1, 1.5, 2, 3)
 SNR_FUN = "+"
@@ -56,7 +56,9 @@ for (cc in seq_configs) {
     
     t0 <- Sys.time()
     res <- future.apply::future_lapply(1:nb_exp, future.seed = TRUE, FUN = function(i) {
-        X0_resize <- X0[, sample(1:n0, N)]
+
+        spl <- sample(n0, N)
+        X0_resize <- X0[, spl]
 
         ## add some signal
         sig <- add_signal(X = X0_resize, pi0 = pi0, 
