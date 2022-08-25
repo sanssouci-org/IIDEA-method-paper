@@ -3,7 +3,7 @@ library("dplyr")
 library("ggplot2")
 
 technology <- "simulation"
-data_set <- "simulation_m=10000"
+data_set <- "block-cov_m=1000"
 path <- file.path("results", sprintf("diff-expr_%s_correlation", technology))
 pattern <- sprintf("%s_nb_cor=(.*)_rho=(.*)_nb-exp=(.*).rds",
                    data_set)
@@ -62,13 +62,15 @@ level$method[level$method == "Simes + single-step calibration"] <- "Adaptive Sim
 
 lev <- level
 lev <- filter(level, alpha <=0.7, 
-              nb_cor %in% c(1,5,20),
+              nb_cor %in% c(1, 5, 20),
               rho %in% c(0.2, 0.4, 0.6))
 nb_exp_ <- unique(lev[["nb_exp"]])
 
 sc_pct <- function(x, ...) scales::percent(x, accuracy = 1, ...)
 
-# one big plot
+# - - - - - - - - - - - - - - - -
+# Figure S-10: JER control
+# - - - - - - - - - - - - - - - -
 p <- ggplot(lev, aes(x = alpha, y = estimate, 
                      ymax = max, ymin = min,
                      color = method,
@@ -88,11 +90,14 @@ p <- ggplot(lev, aes(x = alpha, y = estimate,
     scale_y_continuous(labels = sc_pct) + 
     theme(legend.position = "bottom")
 p + geom_ribbon(alpha = 0.3, linetype = 1)
-plotname <- sprintf("fig_S10_JER-control_%s_%s_correlation.pdf", technology, data_set)
+plotname <- sprintf("fig-S10_JER-control_%s_%s_correlation.pdf", technology, data_set)
 ggsave(p + geom_ribbon(alpha = 0.3, linetype = 1), 
        file = plotname, scale = 1, width = 8, height = 8)
 
-## power
+# - - - - - - - - - - - - - - - -
+# Power (not shown in the paper)
+# - - - - - - - - - - - - - - - -
+
 power <- Reduce(rbind, powList) 
 dim(power)
 
@@ -127,6 +132,6 @@ p <- ggplot(pow, aes(x = alpha, y = estimate,
     scale_x_continuous(labels = sc_pct) + 
     scale_y_continuous(labels = sc_pct) + 
     theme(legend.position="bottom")
-p
-plotname <- sprintf("power_%s_%s_correlation.pdf", technology, data_set)
-ggsave(p, file = plotname, scale = 1, width = 8, height = 6)
+# p
+# plotname <- sprintf("power_%s_%s_correlation.pdf", technology, data_set)
+# ggsave(p, file = plotname, scale = 1, width = 8, height = 6)
