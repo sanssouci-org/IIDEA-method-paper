@@ -2,8 +2,8 @@ library("tidyr")
 library("dplyr")
 library("ggplot2")
 
-technology <- "microarray"
-data_set <- "GSE19188_m=21407"
+technology <- "RNAseq"
+data_set <- "BLCA_m=12418"
 path <- sprintf("results/diff-expr_%s_perf", technology)
 fig_path <- "figures"
 
@@ -14,7 +14,7 @@ filenames <- list.files(path, pattern = pattern)
 ## check result availability
 if (length(filenames) == 0L) {
     msg <- paste("Experiment results not found on disk. Please run", 
-                 "\t\tsource('scripts/perf-microarray_run.R')", 
+                 "\t\tsource('scripts/perf-RNAseq_run.R')", 
                  "\tto generate these results", 
                  sep = "\n")
     stop(msg)
@@ -61,13 +61,13 @@ level$method[level$method == "Simes (parametric)"] <- "Simes"
 level$method[level$method == "Simes + step-down calibration"] <- "Adaptive Simes"
 level$method[level$method == "Simes + single-step calibration"] <- "Adaptive Simes (single step)"
 
-lev <- filter(level, alpha <= 0.5, pi0 %in% c(0.5, 0.8, 0.9, 1), prob == 0.5)
+lev <- filter(level, alpha <= 0.50, pi0 %in% c(0.8, 0.95, 1), SNR != "*1.5")
 nb_exp_ <- unique(lev[["nb_exp"]])
 
 sc_pct <- function(x, ...) scales::percent(x, accuracy = 1, ...)
 
 # - - - - - - - - - - - - - - - 
-# Figure S-8: JER contol
+# Fig 4: JER control
 # - - - - - - - - - - - - - - - 
 p <- ggplot(lev, aes(x = alpha, y = estimate, 
                      ymax = max, ymin = min,
@@ -87,14 +87,14 @@ p <- ggplot(lev, aes(x = alpha, y = estimate,
     theme(legend.position = "bottom")
 p + geom_ribbon(alpha = 0.3, linetype = 1)
 
-plotname <- sprintf("fig-S8_JER-control_%s_%s.pdf", technology, data_set)
+plotname <- sprintf("fig-4_JER-control_%s_%s.pdf", technology, data_set)
 print(plotname)
 pathname <- file.path(fig_path, plotname)
 ggsave(p + geom_ribbon(alpha = 0.3, linetype = 1), 
        file = pathname, scale = 1, width = 8, height = 8)
 
 # - - - - - - - - - - - - - - - 
-# Power (not shown in the paper)
+# Figure S-5: Power
 # - - - - - - - - - - - - - - - 
 power <- Reduce(rbind, powList) 
 dim(power)
@@ -106,7 +106,7 @@ power$method[power$method == "Simes + single-step calibration"] <- "Adaptive Sim
 
 pow <- filter(power, 
               prob == 0.5,
-              SNR %in% c("+2"),
+              SNR %in% c("*2"),
               selection %in% c("first_100", "BH_05", "p_05", "H"), 
               alpha <= 0.5, 
               pi0 == 0.8)
@@ -126,8 +126,9 @@ p <- ggplot(pow, aes(x = alpha, y = estimate,
     scale_x_continuous(labels = sc_pct) + 
     scale_y_continuous(labels = sc_pct) + 
     theme(legend.position="bottom")
-# p
-# plotname <- sprintf("power_%s_%s.pdf", technology, data_set)
-# print(plotname)
-# pathname <- file.path(fig_path, plotname)
-# ggsave(p, file = pathname, scale = 1, width = 8, height = 6)
+p
+plotname <- sprintf("fig-S5_power_%s_%s.pdf", technology, data_set)
+print(plotname)
+pathname <- file.path(fig_path, plotname)
+ggsave(p, file = pathname, scale = 1, width = 8, height = 6)
+
