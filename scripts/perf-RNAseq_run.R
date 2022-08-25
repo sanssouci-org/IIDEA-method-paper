@@ -12,12 +12,6 @@ source("scripts/utils/add_signal.R")
 source("scripts/utils/format_power.R")
 
 # - - - - - - - - - - - - -
-# parallelization setup
-# - - - - - - - - - - - - -
-plan(multisession, workers = 2) # by default parallelize on 2 nodes
-# future::availableCores() to know available 'workers'
-
-# - - - - - - - - - - - - -
 # data set
 # - - - - - - - - - - - - -
 technology <- "RNAseq"
