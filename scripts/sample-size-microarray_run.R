@@ -1,3 +1,6 @@
+# - - - - - - - - - - - - -
+# packages and scripts
+# - - - - - - - - - - - - -
 library("sanssouci")
 library("future.apply")
 library("matrixStats")
@@ -5,20 +8,23 @@ library("cherry")
 library("tibble")
 library("GSEABenchmarkeR")
 
-plan(multisession)
-# future::availableCores() to know available 'workers'
-# plan(multisession, workers = 40)
-
 source("scripts/utils/test_JER_control.R")
 source("scripts/utils/add_signal.R")
 source("scripts/utils/format_power.R")
 
-# setup
+# - - - - - - - - - - - - -
+# parallelization setup
+# - - - - - - - - - - - - -
+plan(multisession, workers = 2) # by default parallelize on 2 nodes
+# future::availableCores() to know available 'workers'
+
+# - - - - - - - - - - - - -
+# data set
+# - - - - - - - - - - - - -
 technology <- "microarray"
 rowTestFUN <- sanssouci::rowWelchTests
 ds_name <- "GSE19188" # should be available from geo2kegg (via GSEABenchmarkeR)
 
-# data
 source("scripts/utils/load_microarray_data.R") # loads 'X0' and 'groups'
 m <- nrow(X0)
 data_set <- sprintf("%s_m=%s", ds_name, m)
@@ -27,6 +33,9 @@ print(data_set)
 path <- sprintf("results/diff-expr_%s_sample-size", technology)
 dir.create(path, showWarnings = FALSE, recursive = TRUE)
 
+# - - - - - - - - - - - - -
+# parameters
+# - - - - - - - - - - - - -
 alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
 B <- 10          # number of permutations for adaptive methods
 nb_exp <- 10     # number of experiments
@@ -41,6 +50,9 @@ prob <- 0.5
 configs <- expand.grid(N = Ns, pi0 = pi0, SNR = SNR)
 seq_configs <- 1:nrow(configs)
 
+# - - - - - - - - - - - - -
+# experiments
+# - - - - - - - - - - - - -
 for (cc in seq_configs) {
     N <- configs[cc, "N"]
     pi0 <- configs[cc, "pi0"]
@@ -95,5 +107,4 @@ for (cc in seq_configs) {
     power <- Reduce(rbind, lapply(res, "[[", "power"))
     res <- list(level = level, power = power)
     saveRDS(res, file = pathname)
-    print(simname)
 }
