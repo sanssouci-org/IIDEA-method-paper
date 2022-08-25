@@ -1,23 +1,29 @@
+# - - - - - - - - - - - - -
+# packages and scripts
+# - - - - - - - - - - - - -
 library("sanssouci")
 library("future.apply")
 library("matrixStats")
 library("cherry")
 library("tibble")
 
-plan(multisession)
-# future::availableCores() to know available 'workers'
-# plan(multisession, workers = 40)
-
 source("scripts/utils/test_JER_control.R")
 source("scripts/utils/add_signal.R")
 source("scripts/utils/format_power.R")
 
-# setup
+# - - - - - - - - - - - - -
+# parallelization setup
+# - - - - - - - - - - - - -
+plan(multisession, workers = 2) # by default parallelize on 2 nodes
+# future::availableCores() to know available 'workers'
+
+# - - - - - - - - - - - - -
+# data set
+# - - - - - - - - - - - - -
 technology <- "RNAseq"
 rowTestFUN <- sanssouci::rowWilcoxonTests
 ds_name <- "BLCA"
 
-# data
 source("scripts/utils/load_RNAseq_data.R") # loads 'X0' and 'groups'
 m <- nrow(X0)
 data_set <- sprintf("%s_m=%s", ds_name, m)
@@ -38,6 +44,9 @@ SNR <-  c(1, 2)
 SNR_FUN = "*"
 prob <- 0.5
 
+# - - - - - - - - - - - - -
+# experiments
+# - - - - - - - - - - - - -
 configs <- expand.grid(N = Ns, pi0 = pi0, SNR = SNR)
 seq_configs <- 1:nrow(configs)
 
@@ -57,9 +66,10 @@ for (cc in seq_configs) {
     t0 <- Sys.time()
     res <- future.apply::future_lapply(1:nb_exp, future.seed = TRUE, FUN = function(i) {
         X0_resize <- X0[, sample(1:n0, N)]
-        if (length(which(rowSums(X0_resize) == 0))>0){
+        null_counts <- which(rowSums(X0_resize) == 0)
+        if (length(null_counts)>0){
             ## caution: here we change the #genes in each experiment
-            X0_resize <- X0_resize[-which(rowSums(X0_resize) == 0),] 
+            X0_resize <- X0_resize[-null_counts, ] 
         }
         
         ## add some signal
@@ -99,5 +109,4 @@ for (cc in seq_configs) {
     power <- Reduce(rbind, lapply(res, "[[", "power"))
     res <- list(level = level, power = power)
     saveRDS(res, file = pathname)
-    print(simname)
 }

@@ -19,7 +19,7 @@ if (length(filenames) == 0L) {
                sep = "\n")
   stop(msg)
 }
-  
+
 levList <- list()
 powList <- list()
 for (filename in filenames) {
@@ -133,6 +133,7 @@ p <- ggplot(pow, aes(x = alpha, y = estimate,
   theme(legend.position="bottom")
 p
 
-plotname <- sprintf("fig-S5_power_%s_%s_sample-size.pdf", technology, data_set)
+plotname <- sprintf("fig-S5_power_%s_%s_sample-size.pdf", 
+                    technology, data_set)
 pathname <- file.path(fig_path, plotname)
 ggsave(p, file = pathname, scale = 1, width = 8, height = 6)

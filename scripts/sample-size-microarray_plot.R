@@ -3,7 +3,7 @@ library("dplyr")
 library("ggplot2")
 
 technology <- "microarray"
-data_set <- "BLCA_m=12418"
+data_set <- "GSE19188_m=21401"
 path <- sprintf("results/diff-expr_%s_sample-size", technology)
 fig_path <- "figures"
 
@@ -53,6 +53,11 @@ for (filename in filenames) {
   powList[[filename]] <- power
 }
 
+sc_pct <- function(x, ...) scales::percent(x, accuracy = 1, ...)
+
+# - - - - - - - - - - - - - - - 
+# Figure S9: JER contol
+# - - - - - - - - - - - - - - - 
 level <- Reduce(rbind, levList) 
 dim(level)
 
@@ -63,23 +68,17 @@ level$method[level$method == "Simes + single-step calibration"] <- "Adaptive Sim
 
 lev <- filter(level, 
               alpha <= 0.7, 
-              pi0 %in% c(0.5, 0.8, 0.9, 1), 
+              pi0 %in% c(0.8), 
               N %in% c(10, 50, 90))
-
 nb_exp_ <- unique(lev[["nb_exp"]])
 
-sc_pct <- function(x, ...) scales::percent(x, accuracy = 1, ...)
-
-# - - - - - - - - - - - - - - - 
-# Figure S9: JER contol
-# - - - - - - - - - - - - - - - 
 p <- ggplot(lev, aes(x = alpha, y = estimate, 
                      ymax = max, ymin = min,
                      color = method,
                      fill = method,
                      shape = method)) + 
   facet_grid(SNR~N, labeller = label_bquote(cols = N: .(N),
-                                              rows = SNR: .(SNR),))  +
+                                            rows = SNR: .(SNR),))  +
   geom_point() + 
   geom_line() + 
   geom_abline(slope = 1, intercept = 0) + 
@@ -139,4 +138,4 @@ p
 plotname <- sprintf("fig-S9_power_%s_%s_sample-size.pdf", 
                     technology, data_set)
 pathname <- file.path(fig_path, plotname)
-ggsave(p + file = pathname, scale = 1, width = 8, height = 6)
+ggsave(p, file = pathname, scale = 1, width = 8, height = 6)
