@@ -1,15 +1,16 @@
-library(sanssouci)
-library(dplyr)
-library(ggplot2)
-library(DESeq2)
-library(edgeR)
-library(limma)
+library("sanssouci")
+library("dplyr")
+library("ggplot2")
+library("DESeq2")
+library("edgeR")
+library("limma")
 
-# rowWilcoxonTests
-
+# - - - - - - - - - - 
+# load RNAseq data
+# - - - - - - - - - - 
 data("RNAseq_blca", package = "sanssouci.data")
 ds_name <- "BLCA"
-X <- round(RNAseq_blca)
+X <- round(RNAseq_blca) # DESeq2 requires integers
 groups <- ifelse(colnames(RNAseq_blca) == "III", 1, 0)
 BLCA0 <- X/colSums(X)*1e6
 ww <- which(rowQuantiles(BLCA0, prob = 0.75) < 5)
@@ -18,15 +19,17 @@ if (length(ww) != 0){
 }
 rm(RNAseq_blca)
 rm(BLCA0)
-dim(X)
 
-## wilcoxon
+# - - - - - - - - - - 
+# Wilcoxon tests
+# - - - - - - - - - - 
 wilcox <- rowWilcoxonTests(X, groups)
 
-
-## limma voom
+# - - - - - - - - - - 
+# limma voom
+# - - - - - - - - - - 
 d <- DGEList(X)
-#> Repeated column names found in count matrix
+# "Repeated column names found in count matrix"
 d <- calcNormFactors(d)
 Grp <- as.factor(groups)
 mm <- model.matrix(~0 + Grp)
@@ -36,30 +39,40 @@ contr <- makeContrasts(Grp1 - Grp0, levels = colnames(coef(res_lm)))
 res_fit <- contrasts.fit(res_lm, contr)
 res_eb <- eBayes(res_fit)
 TT <- topTable(res_eb, sort.by = "none", number = Inf)
-plot(-log10(wilcox$p.value), -log10(TT$P.Value))
-# plot(-log10(wilcox$p.value), -log10(wilcox$p.value))
+# plot(-log10(wilcox$p.value), -log10(TT$P.Value))
 
-## edgeR
+# - - - - - - - - - - 
+# edgeR
+# - - - - - - - - - - 
 design <- model.matrix(~Grp)
 d <- estimateDisp(d, design)
 fit <- glmQLFit(d, design)
 results <- glmQLFTest(fit)
 edgeR <- topTags(results, sort.by = "none", n = Inf)
-plot(-log10(wilcox$p.value), -log10(edgeR$table$PValue))
+# plot(-log10(wilcox$p.value), -log10(edgeR$table$PValue))
 
-## DESeq
+# - - - - - - - - - - 
+# DESeq
+# - - - - - - - - - - 
 dds <- DESeqDataSetFromMatrix(countData=X, colData = DataFrame(Grp),
                               design=~Grp, tidy = FALSE)
+# "converting counts to integer mode"
 dds
 dds <- DESeq(dds)
 deseq <- results(dds)
-plot(-log10(wilcox$p.value), -log10(deseq$pvalue))
-# deseq$pvalue
+# plot(-log10(wilcox$p.value), -log10(deseq$pvalue))
 
-p1 <- data.frame(wilcoxon = -log10(wilcox$p.value), 
-                 `Limma voom` = -log10(TT$P.Value), 
-                 edgeR = -log10(edgeR$table$PValue), 
-                 DESeq = -log10(deseq$pvalue)) %>% 
+# - - - - - - - - - - 
+# gathering the results
+# - - - - - - - - - - 
+dat <- data.frame(wilcoxon = -log10(wilcox$p.value), 
+                  limma_voom = -log10(TT$P.Value), 
+                  edgeR = -log10(edgeR$table$PValue), 
+                  DESeq = -log10(deseq$pvalue))
+# - - - - - - - - - - 
+# plots
+# - - - - - - - - - - 
+p1 <-  dat %>% 
   tidyr::pivot_longer(!wilcoxon, names_to = "test", values_to = "p_values") %>% 
   ggplot(aes(x = p_values, y = wilcoxon)) + 
   geom_point(alpha = 0.2, size = 0.5 ) + 
@@ -67,15 +80,18 @@ p1 <- data.frame(wilcoxon = -log10(wilcox$p.value),
   geom_abline(intercept = 0, slope = 1) + 
   labs(x = "-log10(p-values)", y = "-log10(p_values) [wilcoxon]")
 p1
-ggsave(filename = "comparison_p-value_wilcox_edger_limma_deseq.pdf", plot = p1)
 
-p2 <- data.frame(wilcoxon = -log10(wilcox$p.value), 
-                 limmavoom = -log10(TT$P.Value), 
-                 edgeR = -log10(edgeR$table$PValue), 
-                 DESeq = -log10(deseq$pvalue)) %>% 
-  mutate(wilcoxon2= wilcoxon,`Limma voom2` = limmavoom, edgeR2 = edgeR, DESeq2 = DESeq)%>% 
-  tidyr::pivot_longer(!c(wilcoxon, limmavoom, edgeR, DESeq), names_to = "test_x", values_to = "p_values_x") %>% 
-  tidyr::pivot_longer(!c(test_x, p_values_x), names_to = "test_y", values_to = "p_values_y") %>%
+p2 <- dat %>% 
+  mutate(wilcoxon2 = wilcoxon,
+         limma_voom2 = limma_voom, 
+         edgeR2 = edgeR, 
+         DESeq2 = DESeq) %>% 
+  tidyr::pivot_longer(!c(wilcoxon, limma_voom, edgeR, DESeq), 
+                      names_to = "test_x", 
+                      values_to = "p_values_x") %>% 
+  tidyr::pivot_longer(!c(test_x, p_values_x), 
+                      names_to = "test_y", 
+                      values_to = "p_values_y") %>%
   ggplot(aes(x = p_values_x, y = p_values_y)) + 
   geom_point(alpha = 0.2, size = 0.5 ) + 
   facet_grid(test_x~test_y) + 
