@@ -12,38 +12,18 @@ alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
 Bs <- c(100, 200, 500, 1000, 2000, 5000)          # number of permutations for adaptive methods
 nb_exp <- 1e3    # number of experiments
 
-# future::availableCores() to know available 'workers'
-plan(multisession, workers = 40) 
+rowTestFUN <- sanssouci::rowWilcoxonTests
 
-technology <- c("microarray", "RNAseq")[2]
+data("RNAseq_blca", package = "sanssouci.data")
+X <- RNAseq_blca
+groups <- ifelse(colnames(RNAseq_blca) == "III", 1, 0)
+rm(RNAseq_blca)
 
-# create data set and experiment parameters
-if (technology == "microarray") {
-  rowTestFUN <- sanssouci::rowWelchTests
-  
-  geo2kegg <-  R.cache::memoizedCall(loadEData,"geo2kegg")
-  ds_name <- "GSE19188"
-  rawData <- R.cache::memoizedCall(maPreproc, geo2kegg[ds_name])[[1]]
-  X <- SummarizedExperiment::assays(rawData)$exprs
-  cats <- SummarizedExperiment::colData(rawData)
-  ww <- match(cats$Sample, base::colnames(X))
-  groups <- cats$GROUP[ww]
-  
-} else if (technology == "RNAseq") {
-  rowTestFUN <- sanssouci::rowWilcoxonTests
-  
-  data("RNAseq_blca", package = "sanssouci.data")
-  ds_name <- "BLCA"
-  X <- RNAseq_blca
-  groups <- ifelse(colnames(RNAseq_blca) == "III", 1, 0)
-  rm(RNAseq_blca)
-  BLCA0 <- X/colSums(X)*1e6
-  ww <- which(rowQuantiles(BLCA0, prob = 0.75) < 5)
-  if (length(ww) != 0){
-    X <- X[-ww, ]
-  }
-  dim(X)
-  
+# filter out unexpressed genes
+BLCA0 <- X/colSums(X)*1e6
+ww <- which(rowQuantiles(BLCA0, prob = 0.75) < 5)
+if (length(ww) != 0){
+  X <- X[-ww, ]
 }
 
 table(groups)

@@ -125,7 +125,7 @@ p <- plotConfCurve(conf_bounds, xmax = 2.5*max(n_DEG), cols = cols) +
 #   + geom_hline(yintercept = q, linetype = "dashed", size = size) 
 p
 
-plotname <- "fig-2_conf-curve.pdf"
+plotname <- "fig-2_conf-curves.pdf"
 pathname <- file.path(fig_path, plotname)
 ggsave(p, file = pathname, width = 6, height = 4)
 
@@ -146,7 +146,7 @@ p <- plotConfCurve(conf_bounds, xmax = 2.5*max(n_DEG), cols = cols) +
     theme(legend.position = "bottom", legend.text = element_text(size = 7)) 
 p
 
-plotname <- "fig-S1_conf-curve-annexe.pdf"
+plotname <- "fig-S1_conf-curves-all.pdf"
 pathname <- file.path(fig_path, plotname)
 ggsave(p, file = pathname, width = 6, height = 4)
 
@@ -158,8 +158,8 @@ q <- 0.1 # FDP budget (user-defined)
 FDP <- lapply(resList, predict, what = "FDP", all = TRUE)
 n_DEG <- sapply(FDP, function(x) max(which(x$bound <= q)))
 
-library(limma)
-library(edgeR)
+library("limma")
+library("edgeR")
 d <- DGEList(Y)
 d <- calcNormFactors(d)
 Grp <- as.factor(groups)
