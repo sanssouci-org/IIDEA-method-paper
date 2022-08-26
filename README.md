@@ -6,21 +6,23 @@ This repository contains scripts to reproduce all the numerical experiments and 
 
 A pdf version of each figure is stored in "figures/", and the R code to reproduce the figures is found in "scripts/".
 
-Note that some of the numerical experiments take a long time to run since we are performing 1000 simulations based on real data sets with 10,000 to 20,000 genes by 100 to 200 observations. The experiments are parallelized using the `future` R package. The number of 'workers' used for parallel computing can be set as follows before running a given experiment.
+Note that some of the numerical experiments take a long time to run since we are performing 1000 simulations based on real data sets with 10,000 to 20,000 genes by 100 to 200 observations. The experiments are parallelized using the `future` R package. The number of 'workers' used for parallel computing can be set as follows before running a given experiment:
 
 ```r
 library(future)
 plan(multisession, workers = 2) # parallelize on 2 nodes
 ```
+## Calibration algorithm
 
-### RNAseq data analysis
+- `source("scripts/algo-calibration.R")` to produce Figure 1
 
-Use `source("scripts/perf_RNAseq_run.R")` to produce the following figures:
+## RNAseq data analysis
 
-- Figure 2 (confidence curves)
-- Figure 3 (volcano plot)
-- Figure S-2 (confidence curves, all methods)
-- Figure S-2 (limma vs Wilcoxon p-values)
+- `source("scripts/perf_RNAseq_run.R")` to produce the following figures:
+
+  - Figures 2 and S-1 (confidence curves)
+  - Figure 3 (volcano plot)
+  - Figure S-2 (limma vs Wilcoxon p-values)
 
 ## JER control and power
 
@@ -46,6 +48,11 @@ Use `source("scripts/perf_RNAseq_run.R")` to produce the following figures:
 - `source("scripts/sample-size_microaray_run.R")` to run the experiments
 - `source("scripts/sample-size_microarray.R")` to produce the figure
 
+## Influence of the number of permutations
+
+- `source("scripts/number-of-permutations_run.R")` to run the experiments
+- `source("scripts/number-of-permutations_plot.R")` to produce Figures S-3 and S-4
+
 ## Continuous covariates
 
 ### Fig S-10
@@ -57,7 +64,6 @@ Use `source("scripts/perf_RNAseq_run.R")` to produce the following figures:
 
 | Figures  | Scripts         | Topic |
 | :--------------- |:---------------| :-----|
-| Figure 01   |   ce texte  | calibration algorithm           |
 | Figure S-03  | permutation_studies.R          |    technology = "RNAseq" |
 | Figure S-04  | permutation_studies.R          |    technology = "RNAseq" |
 
