@@ -6,8 +6,6 @@ library("tidyr")
 library("dplyr")
 library("ggplot2")
 
-source("00_utils.R")
-
 alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
 Bs <- c(100, 200, 500, 1000, 2000, 5000)          # number of permutations for adaptive methods
 nb_exp <- 1e3    # number of experiments
@@ -203,9 +201,9 @@ ggplot(aes(x = mean_time, y = diff_q, color = selection, label = B)) +
   geom_point() + 
   geom_line() +
   geom_text(hjust=-0.1, vjust=-0.1) +
-  xlab("Mean time (across 1000 experiments)") + ylab("Interquantile range (Q0.99 - Q0.01) (across 1000 experiments)")
+  xlab("Mean time (across 1000 experiments)") + ylab("Inter-centile range (Q0.99 - Q0.01) (across 1000 experiments)")
 p
-plotname <- sprintf("permutation_time-vs-IQR_%s_%s.pdf", technology, data_set)
+plotname <- sprintf("permutation_time-vs-ICR_%s_%s.pdf", technology, data_set)
 ggsave(p, file = plotname, scale = 1, width = 8, height = 6)
 p1 <- power %>% select(B, time) %>% mutate(B = factor(B)) %>% group_by(B) %>% ggplot() + geom_violin(aes(y = time, x = B)) +
   xlab("Permutation (B)") + ylab("Time (across 1000 experiments)")
