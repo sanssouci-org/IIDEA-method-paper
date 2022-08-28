@@ -44,8 +44,7 @@ FDP <- Reduce(rbind, FDPList) %>%
     filter(alpha == 0.1, 
            selection %in% c("BH_05", "first_1000", "H")
     ) %>%
-    mutate(B = factor(B)) %>%
-    rename(FDP = power)
+    mutate(B = factor(B)) 
 
 
 p <- FDP %>% 
@@ -69,7 +68,7 @@ print(plotname)
 pathname <- file.path(fig_path, plotname)
 ggsave(p, file = pathname, scale = 1, width = 8, height = 6)
 
-B <- 1000
+B <- 100
 
 FDP %>% 
     filter(selection %in% c("BH_05", "first_1000", "H")) %>%

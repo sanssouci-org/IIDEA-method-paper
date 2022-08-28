@@ -28,7 +28,7 @@ if (length(ww) != 0){
   X <- X[-ww, ]
 }
 
-X <- head(X, 1234)
+# X <- head(X, 1234)
 
 m <- nrow(X)
 rowTestFUN <- sanssouci::rowWilcoxonTests
@@ -37,9 +37,9 @@ rowTestFUN <- sanssouci::rowWilcoxonTests
 # parameters
 # - - - - - - - - - - - - -
 alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
-# Bs <- c(100, 200, 500, 1000, 2000, 5000)          # number of permutations
-Bs <- c(100, 200)          # number of permutations
-nb_exp <- 1e1    # number of experiments
+Bs <- c(100, 200, 500, 1000, 2000)          # number of permutations
+# Bs <- c(100, 200)          # number of permutations
+nb_exp <- 1000    # number of experiments
 
 configs <- expand.grid(B = Bs)
 seq_configs <- 1:nrow(configs)
