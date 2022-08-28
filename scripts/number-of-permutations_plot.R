@@ -3,8 +3,7 @@ library("dplyr")
 library("ggplot2")
 
 technology <- "RNAseq"
-# data_set <- "BLCA_m=12418"
-data_set <- "BLCA_m=1234"
+data_set <- "BLCA_m=12534"
 path <- sprintf("results/diff-expr_%s_permutation", technology)
 fig_path <- "figures"
 
@@ -15,7 +14,7 @@ filenames <- list.files(path, pattern = pattern)
 ## check result availability
 if (length(filenames) == 0L) {
     msg <- paste("Experiment results not found on disk. Please run", 
-                 "\t\tsource('scripts/number-of-permutations.R')", 
+                 "\t\tsource('scripts/number-of-permutations_run.R')", 
                  "\tto generate these results", 
                  sep = "\n")
     stop(msg)
@@ -68,7 +67,7 @@ print(plotname)
 pathname <- file.path(fig_path, plotname)
 ggsave(p, file = pathname, scale = 1, width = 8, height = 6)
 
-B <- 100
+B <- 1000
 
 FDP %>% 
     filter(selection %in% c("BH_05", "first_1000", "H")) %>%
@@ -107,7 +106,7 @@ p <- FDP %>%
     xlab("Mean time in log10 scale (sec)") + ylab("False Discoveries Proportion (across 1000 experiments)") + labs(fill = "Permutation (B)")
 p
 
-plotname <- "fig-S3_FDP-distribution_permutations_BLCA_m=12534.pdf"
+plotname <- sprintf("fig-S3_FDP-distribution_permutations_%s_%s.pdf", technology, data_set)
 print(plotname) 
 pathname <- file.path(fig_path, plotname)
 ggsave(p, file = pathname, scale = 1, width = 8, height = 6)
