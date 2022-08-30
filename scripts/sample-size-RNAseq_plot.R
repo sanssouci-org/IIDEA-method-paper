@@ -57,7 +57,7 @@ for (filename in filenames) {
 sc_pct <- function(x, ...) scales::percent(x, accuracy = 1, ...)
 
 # - - - - - - - - - - - - - - - 
-# Figure S6: JER contol
+# Figure S7: JER contol
 # - - - - - - - - - - - - - - - 
 level <- Reduce(rbind, levList) 
 dim(level)
@@ -90,7 +90,7 @@ p <- ggplot(lev, aes(x = alpha, y = estimate,
   theme(legend.position = "bottom")
 p + geom_ribbon(alpha = 0.3, linetype = 1)
 
-plotname <- sprintf("fig-S6_JER-control_sample-size_%s_%s.pdf", 
+plotname <- sprintf("fig-S7_JER-control_sample-size_%s_%s.pdf", 
                     technology, data_set)
 print(plotname)
 pathname <- file.path(fig_path, plotname)
@@ -98,7 +98,7 @@ ggsave(p + geom_ribbon(alpha = 0.3, linetype = 1),
        file = pathname, scale = 1, width = 16, height = 8)
 
 # - - - - - - - - - - - - - - - 
-# Figure S7: power
+# Figure S8: power
 # - - - - - - - - - - - - - - - 
 power <- Reduce(rbind, powList) 
 dim(power)
@@ -134,7 +134,7 @@ p <- ggplot(pow, aes(x = alpha, y = estimate,
   theme(legend.position="bottom")
 p
 
-plotname <- sprintf("fig-S7_power_sample-size_%s_%s.pdf", 
+plotname <- sprintf("fig-S8_power_sample-size_%s_%s.pdf", 
                     technology, data_set)
 print(plotname)
 pathname <- file.path(fig_path, plotname)

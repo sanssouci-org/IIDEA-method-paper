@@ -90,7 +90,7 @@ p <- ggplot(lev, aes(x = alpha, y = estimate,
   theme(legend.position = "bottom")
 p + geom_ribbon(alpha = 0.3, linetype = 1)
 
-plotname <- sprintf("fig-S9_JER-control_%s_%s_sample-size.pdf", 
+plotname <- sprintf("fig-S9_JER-control_sample-size_%s_%s.pdf", 
                     technology, data_set)
 pathname <- file.path(fig_path, plotname)
 ggsave(p + geom_ribbon(alpha = 0.3, linetype = 1), 
@@ -98,7 +98,7 @@ ggsave(p + geom_ribbon(alpha = 0.3, linetype = 1),
 
 
 # - - - - - - - - - - - - - - - 
-# Power (not kept int he paper)
+# Power (not shown in the paper)
 # - - - - - - - - - - - - - - - 
 power <- Reduce(rbind, powList) 
 dim(power)
@@ -135,7 +135,7 @@ p <- ggplot(pow, aes(x = alpha, y = estimate,
   theme(legend.position="bottom")
 p
 
-# plotname <- sprintf("fig-S9_power_%s_%s_sample-size.pdf", 
+# plotname <- sprintf("power_sample-size_%s_%s.pdf", 
 #                     technology, data_set)
 # pathname <- file.path(fig_path, plotname)
 # ggsave(p, file = pathname, scale = 1, width = 8, height = 6)
