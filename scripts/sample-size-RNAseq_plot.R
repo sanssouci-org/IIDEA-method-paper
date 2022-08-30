@@ -90,7 +90,7 @@ p <- ggplot(lev, aes(x = alpha, y = estimate,
   theme(legend.position = "bottom")
 p + geom_ribbon(alpha = 0.3, linetype = 1)
 
-plotname <- sprintf("fig-S6_JER-control_%s_%s_sample-size.pdf", 
+plotname <- sprintf("fig-S6_JER-control_sample-size_%s_%s.pdf", 
                     technology, data_set)
 print(plotname)
 pathname <- file.path(fig_path, plotname)
@@ -134,7 +134,7 @@ p <- ggplot(pow, aes(x = alpha, y = estimate,
   theme(legend.position="bottom")
 p
 
-plotname <- sprintf("fig-S7_power_%s_%s_sample-size.pdf", 
+plotname <- sprintf("fig-S7_power_sample-size_%s_%s.pdf", 
                     technology, data_set)
 print(plotname)
 pathname <- file.path(fig_path, plotname)
