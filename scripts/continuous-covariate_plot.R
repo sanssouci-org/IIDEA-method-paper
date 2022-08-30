@@ -3,7 +3,8 @@ library("dplyr")
 library("ggplot2")
 
 technology <- "simulation"
-data_set <- "block-cov_m=1000"
+data_set <- "block-cov_m=10000"
+
 path <- file.path("results", sprintf("diff-expr_%s_correlation", technology))
 pattern <- sprintf("%s_nb_cor=(.*)_rho=(.*)_nb-exp=(.*).rds",
                    data_set)
@@ -90,7 +91,7 @@ p <- ggplot(lev, aes(x = alpha, y = estimate,
     scale_y_continuous(labels = sc_pct) + 
     theme(legend.position = "bottom")
 p + geom_ribbon(alpha = 0.3, linetype = 1)
-plotname <- sprintf("fig-S10_JER-control_%s_%s_correlation.pdf", technology, data_set)
+plotname <- sprintf("fig-S10_JER-control_correlation_%s_%s.pdf", technology, data_set)
 ggsave(p + geom_ribbon(alpha = 0.3, linetype = 1), 
        file = plotname, scale = 1, width = 8, height = 8)
 
