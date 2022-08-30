@@ -59,12 +59,3 @@ plan(multisession, workers = 2) # parallelize on 2 nodes
 
 - `source("scripts/continuous-covariate_run.R")` to run the experiments
 - `source("scripts/continuous-covariate_plot.R")` to produce the figure
-
-# Work in progress (not totally cleaned up yet)
-
-| Figures  | Scripts         | Topic |
-| :--------------- |:---------------| :-----|
-| Figure S-03  | permutation_studies.R          |    technology = "RNAseq" |
-| Figure S-04  | permutation_studies.R          |    technology = "RNAseq" |
-
-
