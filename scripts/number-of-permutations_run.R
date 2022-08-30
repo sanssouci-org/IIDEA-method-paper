@@ -37,8 +37,7 @@ rowTestFUN <- sanssouci::rowWilcoxonTests
 # parameters
 # - - - - - - - - - - - - -
 alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
-Bs <- c(100, 200, 500, 1000, 2000)          # number of permutations
-# Bs <- c(100, 200)          # number of permutations
+Bs <- c(100, 200, 500, 1000, 2000, 5000)          # number of permutations
 nb_exp <- 1000    # number of experiments
 
 configs <- expand.grid(B = Bs)
@@ -64,7 +63,7 @@ for (cc in seq_configs) {
   t0 <- Sys.time()
   # res <- lapply(1:nb_exp, FUN = function(i) {
   res <- future.apply::future_lapply(1:nb_exp, future.seed = TRUE, FUN = function(i) {
-    
+    print(i)
     tests <- rowTestFUN(X, groups)
     p_values <- tests$p.value
     m <- length(p_values)
@@ -88,6 +87,7 @@ for (cc in seq_configs) {
       rowTestFUN = rowTestFUN, B = B, 
       alpha = alphas, selections = selections,
       verbose = TRUE)
+    gc()
     list(lambda = tibble(exp = i, res_i$lambda),
          FDP = tibble(exp = i, res_i$FDP))
   })

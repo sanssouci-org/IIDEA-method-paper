@@ -57,9 +57,14 @@ p <- FDP %>%
     ggplot(aes(x = mean_time, y = diff_q, color = selection, label = B)) + 
     geom_point() + 
     geom_line() +
-    geom_text(hjust=-0.1, vjust=-0.1) +
+    geom_text(hjust = -0.1, vjust = -0.1, show.legend = FALSE) +
     theme_minimal() +
-    xlab("Mean time (across 1000 experiments)") + ylab("Inter-centile range (Q0.99 - Q0.01) (across 1000 experiments)")
+    xlab("Mean time") +
+    ylab("Inter-centile range (Q0.99 - Q0.01)") +
+    xlim(c(NA, 50)) +
+    theme(legend.position = c(.95, .95),
+          legend.justification = c("right", "top"))
+    
 p
 
 plotname <- sprintf("fig-S4_permutation-time-vs-ICR_%s_%s.pdf", technology, data_set)
@@ -97,13 +102,15 @@ p <- FDP %>%
     # ggtitle("Control of FDP by selection") + 
     scale_fill_brewer(palette = "Purples") + 
     #  scale_shape_discrete() +
-    theme(legend.position="bottom")+
+    theme(legend.position="bottom") +
     stat_summary(fun = mean, geom="line", aes(group = 1)) + #
     scale_x_continuous(trans = "log10", breaks = c(10, 15, 20, 30, 50))  +
     # stat_summary(fun = median, geom="line", aes(group = 1)) + #
-    stat_summary(fun = function(x){quantile(x, probs = 0.99)}, geom="line", aes(group = 1),linetype = "dashed") +
-    stat_summary(fun = function(x){quantile(x, probs = 0.01)}, geom="line", aes(group = 1), linetype = "dashed") +
-    xlab("Mean time in log10 scale (sec)") + ylab("False Discoveries Proportion (across 1000 experiments)") + labs(fill = "Permutation (B)")
+    stat_summary(fun = function(x){ quantile(x, probs = 0.99)}, geom="line", aes(group = 1),linetype = "dashed") +
+    stat_summary(fun = quantile, fun.args=list(probs = 0.01), geom="line", aes(group = 1), linetype = "dashed") +
+    xlab("Mean time (seconds)") +
+    ylab("FDP distribution") +
+    labs(fill = "Number of permutations") 
 p
 
 plotname <- sprintf("fig-S3_FDP-distribution_permutations_%s_%s.pdf", technology, data_set)
