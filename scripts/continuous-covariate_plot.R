@@ -134,5 +134,5 @@ p <- ggplot(pow, aes(x = alpha, y = estimate,
     scale_y_continuous(labels = sc_pct) + 
     theme(legend.position="bottom")
 # p
-# plotname <- sprintf("power_%s_%s_correlation.pdf", technology, data_set)
+# plotname <- sprintf("power_correlation_%s_%s.pdf", technology, data_set)
 # ggsave(p, file = plotname, scale = 1, width = 8, height = 6)
