@@ -14,7 +14,9 @@ plan(multisession, workers = 2) # parallelize on 2 nodes
 ```
 ## Calibration algorithm
 
-- `source("scripts/algo-calibration.R")` to produce Figure 1
+- Figure 1
+
+  - `source("scripts/algo-calibration.R")`
 
 ## RNAseq data analysis
 
@@ -24,38 +26,40 @@ plan(multisession, workers = 2) # parallelize on 2 nodes
   - Figure 3 (volcano plot)
   - Figure S-2 (limma vs Wilcoxon p-values)
 
-## JER control and power
+## Performance evaluation: JER control and power
 
-### Fig 4 and S-5 (RNAseq data)
+- Figures 4 and S-5 (RNAseq data)
 
-- `source("scripts/perf_RNAseq_run.R")` to run the experiments
-- `source("scripts/perf_RNAseq_plot.R")` to produce the figures
+  - `source("scripts/perf_RNAseq_run.R")` to run the experiments
+  - `source("scripts/perf_RNAseq_plot.R")` to produce the figures
 
-### Fig S-8 (microarray data)
+- Figures S-8 (microarray data)
 
-- `source("scripts/perf_microaray_run.R")` to run the experiments
-- `source("scripts/perf_microarray.R")` to produce the figure
+  - `source("scripts/perf_microaray_run.R")` to run the experiments
+  - `source("scripts/perf_microarray.R")` to produce the figure
 
 ## Influence of sample size
 
-### Fig S-6 and S-7 (RNAseq data)
+- Figures S-6 and S-7 (RNAseq data)
 
-- `source("scripts/sample-size_RNAseq_run.R")` to run the experiments
-- `source("scripts/sample-size_RNAseq_plot.R")` to produce the figures
+  - `source("scripts/sample-size_RNAseq_run.R")` to run the experiments
+  - `source("scripts/sample-size_RNAseq_plot.R")` to produce the figures
 
-### Fig S-9 (microarray data)
+- Figures S-9 (microarray data)
 
-- `source("scripts/sample-size_microaray_run.R")` to run the experiments
-- `source("scripts/sample-size_microarray.R")` to produce the figure
+  - `source("scripts/sample-size_microaray_run.R")` to run the experiments
+  - `source("scripts/sample-size_microarray.R")` to produce the figure
 
 ## Influence of the number of permutations
 
-- `source("scripts/number-of-permutations_run.R")` to run the experiments
-- `source("scripts/number-of-permutations_plot.R")` to produce Figures S-3 and S-4
+- Figures S-3 and S-4
+
+  - `source("scripts/number-of-permutations_run.R")` to run the experiments
+  - `source("scripts/number-of-permutations_plot.R")` to produce the figures
 
 ## Continuous covariates
 
-### Fig S-10
+- Figures S-10
 
-- `source("scripts/continuous-covariate_run.R")` to run the experiments
-- `source("scripts/continuous-covariate_plot.R")` to produce the figure
+  - `source("scripts/continuous-covariate_run.R")` to run the experiments
+  - `source("scripts/continuous-covariate_plot.R")` to produce the figure
