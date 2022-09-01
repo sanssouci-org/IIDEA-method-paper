@@ -87,7 +87,7 @@ p <- ggplot(lev, aes(x = alpha, y = estimate,
     theme(legend.position = "bottom")
 p + geom_ribbon(alpha = 0.3, linetype = 1)
 
-plotname <- sprintf("fig-S8_JER-control_%s_%s.pdf", technology, data_set)
+plotname <- sprintf("fig-S6_JER-control_%s_%s.pdf", technology, data_set)
 print(plotname)
 pathname <- file.path(fig_path, plotname)
 ggsave(p + geom_ribbon(alpha = 0.3, linetype = 1), 

@@ -16,10 +16,8 @@ source("scripts/utils/format_power.R")
 # - - - - - - - - - - - - -
 technology <- "simulation"
 n <- 60
-# m <- 10000
-# K <- 99
-m <- 1000
-K <- 50
+m <- 10000
+K <- 99
 rho <- c(0.2, 0.4, 0.6)
 ds_name <- "block-cov"
 
