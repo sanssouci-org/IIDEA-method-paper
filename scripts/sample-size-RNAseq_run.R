@@ -28,8 +28,8 @@ path <- sprintf("results/diff-expr_%s_sample-size", technology)
 dir.create(path, showWarnings = FALSE, recursive = TRUE)
 
 alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
-B <- 10          # number of permutations for adaptive methods
-nb_exp <- 10     # number of experiments
+B <- 1000          # number of permutations for adaptive methods
+nb_exp <- 1000     # number of experiments
 
 # Ns <- c(10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100)
 Ns <- c(10, 50, 90)
