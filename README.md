@@ -20,7 +20,7 @@ plan(multisession, workers = 2) # parallelize on 2 nodes
 
 ## RNAseq data analysis
 
-- `source("scripts/perf_RNAseq_run.R")` to produce the following figures:
+- `source("scripts/RNAseq-analysis.R")` to produce the following figures:
 
   - Figures 2 and S-1 (confidence curves)
   - Figure 3 (volcano plot)
@@ -33,14 +33,14 @@ plan(multisession, workers = 2) # parallelize on 2 nodes
   - `source("scripts/perf_RNAseq_run.R")` to run the experiments
   - `source("scripts/perf_RNAseq_plot.R")` to produce the figures
 
-- Figures S-8 (microarray data)
+- Figures S-6 (microarray data)
 
   - `source("scripts/perf_microaray_run.R")` to run the experiments
   - `source("scripts/perf_microarray.R")` to produce the figure
 
 ## Influence of sample size
 
-- Figures S-6 and S-7 (RNAseq data)
+- Figures S-7 and S-8 (RNAseq data)
 
   - `source("scripts/sample-size_RNAseq_run.R")` to run the experiments
   - `source("scripts/sample-size_RNAseq_plot.R")` to produce the figures
@@ -59,7 +59,7 @@ plan(multisession, workers = 2) # parallelize on 2 nodes
 
 ## Continuous covariates
 
-- Figures S-10
+- Figure S-10
 
   - `source("scripts/continuous-covariate_run.R")` to run the experiments
   - `source("scripts/continuous-covariate_plot.R")` to produce the figure

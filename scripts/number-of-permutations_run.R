@@ -22,9 +22,9 @@ groups <- ifelse(colnames(RNAseq_blca) == "III", 1, 0)
 rm(RNAseq_blca)
 
 # filter out unexpressed genes
-BLCA0 <- X/colSums(X)*1e6
+BLCA0 <- X / colSums(X) * 1e6
 ww <- which(rowQuantiles(BLCA0, prob = 0.75) < 5)
-if (length(ww) != 0){
+if (length(ww) != 0) {
   X <- X[-ww, ]
 }
 
@@ -36,9 +36,9 @@ rowTestFUN <- sanssouci::rowWilcoxonTests
 # - - - - - - - - - - - - -
 # parameters
 # - - - - - - - - - - - - -
-alphas <- seq(from = 0, to = 1, by = 0.05)  # target JER level
-Bs <- c(100, 200, 500, 1000, 2000, 5000)          # number of permutations
-nb_exp <- 1000    # number of experiments
+alphas <- seq(from = 0, to = 1, by = 0.05) # target JER level
+Bs <- c(100, 200, 500, 1000, 2000, 5000) # number of permutations
+nb_exp <- 1000 # number of experiments
 
 configs <- expand.grid(B = Bs)
 seq_configs <- 1:nrow(configs)
@@ -51,15 +51,17 @@ dir.create(path, showWarnings = FALSE, recursive = TRUE)
 # - - - - - - - - - - - - -
 for (cc in seq_configs) {
   B <- configs[cc, "B"]
-  
-  simname <- sprintf("%s_m=%s_B=%s_nb-exp=%s",
-                     ds_name, m, 
-                     B, nb_exp)
+
+  simname <- sprintf(
+    "%s_m=%s_B=%s_nb-exp=%s",
+    ds_name, m,
+    B, nb_exp
+  )
   print(simname)
   cat(cc, "/", nrow(configs), ":", simname, "\n")
   filename <- sprintf("%s.rds", simname)
   pathname <- file.path(path, filename)
-  
+
   t0 <- Sys.time()
   # res <- lapply(1:nb_exp, FUN = function(i) {
   res <- future.apply::future_lapply(1:nb_exp, future.seed = TRUE, FUN = function(i) {
@@ -80,16 +82,20 @@ for (cc in seq_configs) {
       BH_05 = which(p.adjust(p_values, method = "BH") < 0.05),
       p_05 = which(p_values < 0.05),
       # p_01 = which(p_values < 0.01),
-      H = 1:m)
+      H = 1:m
+    )
     ## check JER control and estimate power
     res_i <- get_perm_lambda_FDP(
-      Y = X, groups = groups, 
-      rowTestFUN = rowTestFUN, B = B, 
+      Y = X, groups = groups,
+      rowTestFUN = rowTestFUN, B = B,
       alpha = alphas, selections = selections,
-      verbose = TRUE)
+      verbose = TRUE
+    )
     gc()
-    list(lambda = tibble(exp = i, res_i$lambda),
-         FDP = tibble(exp = i, res_i$FDP))
+    list(
+      lambda = tibble(exp = i, res_i$lambda),
+      FDP = tibble(exp = i, res_i$FDP)
+    )
   })
   lambda <- Reduce(rbind, lapply(res, "[[", "lambda"))
   FDP <- Reduce(rbind, lapply(res, "[[", "FDP"))
