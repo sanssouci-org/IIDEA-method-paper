@@ -16,7 +16,7 @@ filenames <- list.files(path, pattern = pattern)
 ## check result availability
 if (length(filenames) == 0L) {
   msg <- paste("Experiment results not found on disk. Please run",
-    "\t\tsource('scripts/sample-size-RNAseq_run.R')",
+    "\t\tsource('scripts/sample-size-microarray_run.R')",
     "\tto generate these results",
     sep = "\n"
   )
