@@ -73,7 +73,7 @@ for (cc in seq_configs) {
       SNR = SNR, SNR_FUN = SNR_FUN,
       prob = prob
     )
-    str(sig)
+    # str(sig)
 
     tests <- rowTestFUN(sig$Y, sig$groups)
     p_values <- tests$p.value
